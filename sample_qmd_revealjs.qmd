@@ -1,0 +1,133 @@
+---
+title: "Sample Quarto Presentation with Revealjs"
+format:
+  revealjs: 
+    theme: [dark, custom.scss]
+    logo: nebraska-n.jpg
+    fontsize: 1.6em
+    callout-icon: false
+    scrollable: true
+    fig-dpi: 400
+    fig-align: left
+execute:
+  echo: false
+---
+
+
+```{r}
+#| include: false
+library(ggplot2)
+library(dplyr)
+```
+
+# Section title
+
+## Slide title
+
+```{r}
+#| echo: true
+#| fig-width: 5
+#| fig-height: 3
+#| out-width: 5in
+#| out-height: 3in
+
+ggplot(data = mtcars) +
+  geom_point(aes(y = mpg, x = cyl))
+```
+
+# New section title
+
+## Slide with tabsets
+
+::: {.panel-tabset}
+
+### Tab 1
+
+### Tab 2
+
+### Tab 3
+
+:::
+<!--end of panel-->
+
+## Slide with nested tabsets
+
+::: {.panel-tabset}
+
+### Tab 1
+
+::: {.panel-tabset}
+
+#### Tab 1
+
+#### Tab 2
+
+#### Tab 3
+
+#### Tab 4
+
+:::
+<!--end of panel-->
+
+### Tab 2
+
+### Tab 3
+
+:::
+<!--end of panel-->
+
+## Slide with a figure
+
+```{r}
+#| out-width: 80%
+#| fig-align: left
+ggplot(data = mtcars) +
+  geom_point(aes(y = mpg, x = cyl))
+```
+
+## Slide with a table
+
+```{r}
+gt::gt(mtcars)
+```
+
+## Slide with an incremental list
+
+::: {.incremental}
+- collect data
+- run statistical analysis
+- report
+:::
+
+## Slide with columns
+
+::: {.columns}
+
+::: {.column width="50%"}
+```{r}
+#| out-width: 50%
+ggplot(data = mtcars) +
+  geom_point(aes(y = mpg,  x = cyl))
+```
+:::
+<!--end of the 1st column-->
+
+::: {.column width="50%"}
+```{r}
+#| fig-cap: "Nice plot title"
+ggplot(data = mtcars) +
+  geom_point(aes(y = mpg,  x = disp))
+```
+:::
+<!--end of the 2nd column-->
+:::
+<!--end of the columns-->
+
+## Slide with regression results
+
+```{r}
+#| echo: true
+reg <- lm(mpg ~ cyl + disp, data = mtcars) 
+
+modelsummary::modelsummary(reg)
+```
