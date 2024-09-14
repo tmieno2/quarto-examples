@@ -8,7 +8,6 @@ format:
     number-sections: true
     number-depth: 2
   docx: default
-  typst: default
 ---
 
 # Basic illustrations
@@ -18,7 +17,7 @@ format:
 This is a Quarto document. 
 
 ```{r cars}
-#| echo: true
+#| eval: false
 summary(cars)
 ```
 

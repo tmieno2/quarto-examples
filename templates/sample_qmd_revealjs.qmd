@@ -1,8 +1,8 @@
 ---
 title: "Sample Quarto Presentation with Revealjs"
 format:
-  revealjs: 
-    theme: [dark, custom.scss]
+  revealjs:
+    theme: [default, custom.scss]
     logo: nebraska-n.jpg
     fontsize: 1.6em
     callout-icon: false
@@ -11,6 +11,8 @@ format:
     fig-align: left
 execute:
   echo: false
+  message: false
+  warning: false
 ---
 
 
@@ -79,7 +81,10 @@ ggplot(data = mtcars) +
 ## Slide with a figure
 
 ```{r}
-#| out-width: 80%
+#| fig-width: 5
+#| fig-height: 6
+#| out-width: 5in
+#| out-height: 6in
 #| fig-align: left
 ggplot(data = mtcars) +
   geom_point(aes(y = mpg, x = cyl))
@@ -92,6 +97,10 @@ gt::gt(mtcars)
 ```
 
 ## Slide with an incremental list
+
+- collect data
+- run statistical analysis
+- report
 
 ::: {.incremental}
 - collect data
@@ -119,14 +128,45 @@ ggplot(data = mtcars) +
   geom_point(aes(y = mpg,  x = disp))
 ```
 :::
+
 <!--end of the 2nd column-->
+
 :::
 <!--end of the columns-->
+
+
+::: {.columns}
+
+::: {.column width="50%"}
+```{r}
+#| out-width: 100%
+ggplot(data = mtcars) +
+  geom_point(aes(y = mpg,  x = cyl))
+```
+:::
+<!--end of the 1st column-->
+
+::: {.column width="50%"}
+```{r}
+#| fig-cap: "Nice plot title"
+ggplot(data = mtcars) +
+  geom_point(aes(y = mpg,  x = disp))
+```
+:::
+
+<!--end of the 2nd column-->
+
+:::
+<!--end of the columns-->
+
+
+
 
 ## Slide with regression results
 
 ```{r}
 #| echo: true
+#| eval: false
 reg <- lm(mpg ~ cyl + disp, data = mtcars) 
 
 modelsummary::modelsummary(reg)
