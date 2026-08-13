@@ -1,207 +1,318 @@
 ---
 title: "Reporting using Quarto"
 author: "Taro Mieno"
+date: today
 format:
   html:
     toc: true
     toc-depth: 2
     number-sections: true
     number-depth: 2
-  docx: default
 ---
 
-# Basic illustrations
+<!--
+This file is the companion to lecture 02-1. Every point made in that lecture has
+a worked example here, and every chunk is labelled so the lecture can point you
+straight at it.
 
-## Quarto
+Two things are deliberately NOT set in the YAML header above, because the
+lecture asks you to add them yourself:
+  - the `docx` and `typst` output formats  (see "Output types")
+  - `embed-resources: true`                (see "Submitting your html")
+-->
 
-This is a Quarto document. 
+# R code chunks and regular text {#sec-chunks-and-text}
 
-```{r cars}
-#| eval: false
+Anything that is not enclosed in the special chunk syntax, like this sentence,
+is regular text. The two chunks below are R code.
+
+**A chunk whose code and result both appear:**
+
+```{r}
+#| label: summary-cars
 summary(cars)
 ```
 
-## Including Plots
+**A chunk whose code is hidden, so only the plot appears:**
 
-You can also embed plots, for example:
-
-```{r pressure}
+```{r}
+#| label: plot-pressure
 #| echo: false
-#| fig.align: right
 plot(pressure)
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+The second chunk uses `echo: false`, which is why you see the figure but not the
+code that drew it.
 
-## Including a table
+# Inline code {#sec-inline}
 
-```{r }
-knitr::kable(iris[1:5, ], caption = "A caption")
-```
-
-## Inline r code
+Values computed in R can be dropped into a sentence, so the numbers in your
+writing update themselves when the data changes.
 
 ```{r}
-#| echo: true
-
+#| label: inline-demo
 set.seed(2334)
 yield <- 200 * runif(100)
 mean_yield <- mean(yield)
 ```
 
-The average yield is `r mean_yield`. 
+The average yield is `r round(mean_yield, 1)`, computed from
+`r length(yield)` observations.
 
-# Markdown basics (level 1 header)
+Look at the source of the sentence above: the numbers are written as inline R
+code, not typed by hand.
 
-## level 2 header
+# Markdown basics {#sec-markdown}
 
-### level 3 header
+## A level-2 header
 
-See the source rmd file:
+### A level-3 header
 
 + list item 1
-  - another list
+  - a nested list item
 + list item 2
-+ list item 3
 + *italics*
 + **bold**
-+ `code` (do not put r right after the first tick mark)
-+ inline math: I hate math. What does this $\int_a^b f(x)dx$ even mean?
-+ math: $$\sum_{i=1}^n x_i/n$$
-+ link: [Markdown basics](https://rmarkdown.rstudio.com/lesson-8.html)
-+ citationL: The best resource to learn how to use Rmarkdown is [@xie2018r].
++ `code shown in a sentence`
++ inline math: what does $\int_a^b f(x)dx$ even mean?
++ a web link: [Markdown basics](https://quarto.org/docs/authoring/markdown-basics.html)
 
-# Chunk options 
+Math on its own line:
 
-## `echo` and `eval`
+$$\bar{x} = \sum_{i=1}^n x_i/n$$
 
-**R code and results** 
+## Inserting a figure
+
+A figure that lives in a file is inserted with this syntax:
+
+````{verbatim}
+![A caption for the figure](my_figure.png)
+````
+
+A figure produced by R is inserted by writing the code that draws it, and
+labelling the chunk. See @sec-figure-options below.
+
+## Citations
+
+A citation is written `[@smith2020]`, where the key refers to an entry in a
+`.bib` file named in the YAML header. Setting that up is covered in lecture
+02-4, so it is only shown here, not used.
+
+# Chunk labels {#sec-labels}
+
+Every chunk in this file has a label, given with `#| label:`. The chunk below is
+called `labelled-example`.
 
 ```{r}
+#| label: labelled-example
+n_rows <- nrow(cars)
+n_rows
+```
+
+Labels make error messages readable, and they are required for the
+cross-references you will meet in lecture 02-4.
+
+# Chunk options {#sec-chunk-options}
+
+## `echo` and `eval` {#sec-echo-eval}
+
+**Both the code and the result (the default):**
+
+```{r}
+#| label: echo-eval-both
 summary(cars)
 ```
 
-**R code suppressed** 
+**`echo: false`, so the code is hidden and only the result appears:**
 
 ```{r}
+#| label: echo-eval-no-echo
 #| echo: false
 summary(cars)
 ```
 
-**Only R code (R code was not evaluated)**
+**`eval: false`, so the code is shown but never run, and there is no result:**
 
 ```{r}
+#| label: echo-eval-no-eval
 #| eval: false
 summary(cars)
 ```
 
-**Both R codes and results not shown**
+**Both `false`, so nothing appears at all:**
 
 ```{r}
+#| label: echo-eval-neither
 #| echo: false
-#| eval: false 
+#| eval: false
 summary(cars)
 ```
 
----
+## `message` and `warning` {#sec-message-warning}
 
-## `messages` and `warnings`
-
-### both messages and warnings
+**Both a message and a warning are shown (the default):**
 
 ```{r}
-library(tidyverse)
-detach("package:tidyverse", unload = TRUE)
+#| label: message-warning-both
+message("This is a message.")
+warning("This is a warning.")
+mean(c(1, 2, 3))
 ```
 
-### messages suppressed
+**`message: false` hides the message but keeps the warning:**
 
 ```{r}
+#| label: message-warning-no-message
 #| message: false
-library(tidyverse)
-detach("package:tidyverse", unload = TRUE)
+message("This is a message.")
+warning("This is a warning.")
+mean(c(1, 2, 3))
 ```
 
-### both messages and warnings suppressed
+**Both suppressed, leaving only the result:**
 
 ```{r}
+#| label: message-warning-neither
 #| message: false
-#| warning: false 
-library(tidyverse)
-detach("package:tidyverse", unload = TRUE)
+#| warning: false
+message("This is a message.")
+warning("This is a warning.")
+mean(c(1, 2, 3))
 ```
 
----
+## `output` {#sec-output}
 
-## `results`
-
-No results are shown.
+`output: false` hides the result, but the code still runs.
 
 ```{r}
+#| label: output-demo
 #| output: false
 a <- runif(100)
-a
+mean(a)
 ```
 
-But, this shows the above code was evaluated and object `a` was created.
+The chunk above printed nothing. The chunk below proves it ran anyway, because
+the object `a` exists:
 
 ```{r}
-a
+#| label: output-demo-check
+length(a)
 ```
 
----
+## `include` {#sec-include}
 
-## `include = FALSE`
-
-No results are shown.
+`include: false` hides the code *and* the result. It is what you put on a setup
+chunk that loads packages.
 
 ```{r}
+#| label: include-demo
 #| include: false
 b <- runif(100)
 ```
 
-But, this shows the above code was evaluated and object `a` was created.
+Nothing from that chunk appears above, yet `b` was created:
 
-```{r include_ex}
-b
+```{r}
+#| label: include-demo-check
+length(b)
 ```
 
----
+## Figure options {#sec-figure-options}
 
-# Caching
+This chunk sets the size, the alignment, and the caption of the figure it
+produces.
 
-```{r cache_1}
+```{r}
+#| label: fig-options
+#| fig-width: 6
+#| fig-height: 3
+#| fig-align: center
+#| fig-cap: "Pressure rises sharply with temperature."
+plot(pressure)
+```
+
+Change `fig-align` to `left` or `right`, or change `fig-width`, and render again
+to see the effect.
+
+## `code-fold` {#sec-code-fold}
+
+`code-fold: true` collapses the code behind a button the reader can open,
+instead of removing it from the document.
+
+```{r}
+#| label: code-fold-demo
+#| code-fold: true
+hist(yield, main = "Distribution of yield")
+```
+
+## `error` {#sec-error}
+
+By default a failing chunk stops the whole render. `error: true` lets the
+document build anyway and prints the error where it happened.
+
+```{r}
+#| label: error-demo
+#| error: true
+log("a")
+```
+
+# Reading a data file {#sec-reading-files}
+
+By default R looks for a file in the folder holding this qmd file:
+
+```{r}
+#| label: read-relative
+#| eval: false
+corn <- read.csv("corn_price.csv")
+```
+
+Inside an R Project, `here()` builds the path from the project root instead, so
+the same line works from any folder and on any computer:
+
+```{r}
+#| label: read-here
+#| eval: false
+corn <- read.csv(here::here("data", "corn_price.csv"))
+```
+
+Both chunks use `eval: false`, so they are shown but not run. Remove that option
+once you have a file of your own to read.
+
+# Caching {#sec-caching}
+
+```{r}
+#| label: cache_1
 #| cache: true
-#| eval: false 
- 
+#| eval: false
+
 #--- repeat steps 1-3 B times ---#
 MC_sim <- function(i) {
   N <- 50000 # sample size
 
-  #--- steps 1 and 2:  ---#
+  #--- steps 1 and 2 ---#
   mu <- rnorm(N) # the common term shared by both x and u
   x <- rnorm(N) + mu # independent variable
   v <- rnorm(N) + mu # error
-  y <- 1 + 2 * x + v # dependent variable
+  y <- 1 + x + v # dependent variable
   data <- data.frame(y = y, x = x)
 
   #--- OLS ---#
   reg <- lm(y ~ x, data = data) # OLS
 
-  #--- return the coef ---#
+  #--- return the coefficient on x ---#
   return(reg$coef["x"])
 }
 
-MC_results <- lapply(1:1000, MC_sim) %>%
-  unlist() %>%
+MC_results <- lapply(1:1000, MC_sim) |>
+  unlist() |>
   mean()
 
 MC_results
 ```
 
-```{r cache_2}
-#| eval: false
+```{r}
+#| label: cache_2
 #| cache: true
+#| eval: false
 MC_results
 ```
-
